@@ -17,8 +17,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class KademliaMessageDeserializer<ID extends Number, C extends ConnectionInfo, K extends Serializable, V extends Serializable> implements JsonDeserializer<KademliaMessage<ID, C, Serializable>> {
     private final Map<String, Type> typeRegistry = new ConcurrentHashMap<>();
+    private final Map<String, Class<?>> messageClassRegistry = new ConcurrentHashMap<>();
 
     public KademliaMessageDeserializer(Class<ID> idClass) {
+        this.registerMessageClass(MessageType.DHT_LOOKUP, DHTLookupKademliaMessage.class);
+        this.registerMessageClass(MessageType.DHT_LOOKUP_RESULT, DHTLookupResultKademliaMessage.class);
+        this.registerMessageClass(MessageType.DHT_STORE, DHTStoreKademliaMessage.class);
+        this.registerMessageClass(MessageType.DHT_STORE_RESULT, DHTStoreResultKademliaMessage.class);
+        this.registerMessageClass(MessageType.FIND_NODE_REQ, FindNodeRequestMessage.class);
+        this.registerMessageClass(MessageType.FIND_NODE_RES, FindNodeResponseMessage.class);
+        this.registerMessageClass(MessageType.PING, PingKademliaMessage.class);
+        this.registerMessageClass(MessageType.PONG, PongKademliaMessage.class);
+        this.registerMessageClass(MessageType.SHUTDOWN, ShutdownKademliaMessage.class);
+        this.registerMessageClass(MessageType.EMPTY, EmptyKademliaMessage.class);
+
         this.registerDataType(MessageType.DHT_LOOKUP, new TypeToken<DHTLookupKademliaMessage.DHTLookup<ID, C, K>>(){}.getType());
         this.registerDataType(MessageType.DHT_LOOKUP_RESULT, new TypeToken<DHTLookupResultKademliaMessage.DHTLookupResult<K, V>>(){}.getType());
         this.registerDataType(MessageType.DHT_STORE, new TypeToken<DHTStoreKademliaMessage.DHTData<ID, C, K, V>>(){}.getType());
@@ -35,32 +47,18 @@ public class KademliaMessageDeserializer<ID extends Number, C extends Connection
     @Override
     public KademliaMessage<ID, C, Serializable> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
-        String messageType = jsonObject.getAsJsonPrimitive("type").getAsString();
+        String type_ = jsonObject.getAsJsonPrimitive("type").getAsString();
         Node<ID, C> node = jsonDeserializationContext.deserialize(
                 jsonObject.getAsJsonObject("node"),
                 Node.class
         );
-        return new KademliaMessage<ID, C, Serializable>() {
-            @Override
-            public Serializable getData() {
-                return getMessageData(messageType, jsonObject, jsonDeserializationContext);
-            }
-
-            @Override
-            public String getType() {
-                return messageType;
-            }
-
-            @Override
-            public Node<ID, C> getNode() {
-                return node;
-            }
-
-            @Override
-            public boolean isAlive() {
-                return true;
-            }
-        };
+        Class<?> aClass = this.messageClassRegistry.get(type_);
+        KademliaMessage<ID, C, Serializable> o = (KademliaMessage<ID, C, Serializable>) aClass.newInstance();
+        o.setData(getMessageData(type_, jsonObject, jsonDeserializationContext));
+        o.setType(type_);
+        o.setNode(node);
+        o.setAlive(true);
+        return o;
     }
 
     protected <X extends Serializable> X getMessageData(
@@ -84,4 +82,7 @@ public class KademliaMessageDeserializer<ID extends Number, C extends Connection
         this.typeRegistry.put(name, type);
     }
 
+    public void registerMessageClass(String name, Class<?> clazz){
+        this.messageClassRegistry.put(name, clazz);
+    }
 }

@@ -51,9 +51,10 @@ public class SerializationTest {
 
         Type type = new TypeToken<KademliaMessage<BigInteger, IPPortConnectionInfo, DHTLookupKademliaMessage.DHTLookup<BigInteger, IPPortConnectionInfo, String>>>() {}.getType();
         KademliaMessage<BigInteger, IPPortConnectionInfo, DHTLookupKademliaMessage.DHTLookup<BigInteger, IPPortConnectionInfo, String>> kademliaMessage1 = messageSerializer.deserialize(json);
+        Assertions.assertTrue(kademliaMessage1 instanceof DHTLookupKademliaMessage);
         Assertions.assertEquals(kademliaMessage1.getType(), kademliaMessage.getType());
         Assertions.assertEquals(kademliaMessage1.getNode().getId(), kademliaMessage.getNode().getId());
-//        Assertions.assertEquals(kademliaMessage1.getData(), kademliaMessage.getData());
+        Assertions.assertEquals(kademliaMessage1.getData(), kademliaMessage.getData());
         Assertions.assertEquals(kademliaMessage1.getData().getCurrentTry(), kademliaMessage.getData().getCurrentTry());
         Assertions.assertEquals(kademliaMessage1.getData().getKey(), kademliaMessage.getData().getKey());
         Assertions.assertEquals(kademliaMessage1.getData().getRequester().getId(), kademliaMessage.getData().getRequester().getId());
@@ -71,6 +72,7 @@ public class SerializationTest {
 
         Type type = new TypeToken<KademliaMessage<BigInteger, IPPortConnectionInfo, Serializable>>(){}.getType();
         KademliaMessage<BigInteger, IPPortConnectionInfo, Serializable> kademliaMessage1 = messageSerializer.deserialize(json);
+        Assertions.assertTrue(kademliaMessage1 instanceof DHTLookupResultKademliaMessage);
         Assertions.assertEquals(kademliaMessage1.getType(), kademliaMessage.getType());
         Assertions.assertEquals(kademliaMessage1.getNode().getId(), kademliaMessage.getNode().getId());
         Assertions.assertEquals(kademliaMessage1.getData(), kademliaMessage.getData());
@@ -121,6 +123,7 @@ public class SerializationTest {
         System.out.println(json);
 
         KademliaMessage<BigInteger, IPPortConnectionInfo, Serializable> kademliaMessage1 = messageSerializer.deserialize(json);
+        Assertions.assertTrue(kademliaMessage1 instanceof DHTStoreKademliaMessage);
         Assertions.assertEquals(kademliaMessage1.getType(), kademliaMessage.getType());
         Assertions.assertEquals(kademliaMessage1.getNode().getId(), kademliaMessage.getNode().getId());
         Field field = kademliaMessage1.getData().getClass().getDeclaredField("key");
@@ -140,6 +143,7 @@ public class SerializationTest {
         System.out.println(json);
 
         KademliaMessage<BigInteger, IPPortConnectionInfo, Serializable> kademliaMessage1 = messageSerializer.deserialize(json);
+        Assertions.assertTrue(kademliaMessage1 instanceof DHTStoreResultKademliaMessage);
         Assertions.assertEquals(kademliaMessage1.getType(), kademliaMessage.getType());
         System.out.println(kademliaMessage1.getNode().getClass());
         System.out.println(kademliaMessage1.getNode().getConnectionInfo());
@@ -156,6 +160,7 @@ public class SerializationTest {
         System.out.println(json);
 
         KademliaMessage<BigInteger, IPPortConnectionInfo, Serializable> kademliaMessage1 = messageSerializer.deserialize(json);
+        Assertions.assertTrue(kademliaMessage1 instanceof EmptyKademliaMessage);
         Assertions.assertEquals(kademliaMessage1.getType(), kademliaMessage.getType());
         Assertions.assertEquals(kademliaMessage1.getNode().getId(), kademliaMessage.getNode().getId());
         Assertions.assertEquals(kademliaMessage1.getData(), kademliaMessage.getData());
@@ -171,6 +176,7 @@ public class SerializationTest {
         System.out.println(json);
 
         KademliaMessage<BigInteger, IPPortConnectionInfo, Serializable> kademliaMessage1 = messageSerializer.deserialize(json);
+        Assertions.assertTrue(kademliaMessage1 instanceof FindNodeRequestMessage);
         Assertions.assertEquals(kademliaMessage1.getType(), kademliaMessage.getType());
         Assertions.assertEquals(kademliaMessage1.getNode().getId(), kademliaMessage.getNode().getId());
         Assertions.assertEquals(kademliaMessage1.getData(), kademliaMessage.getData());
