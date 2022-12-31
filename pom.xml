@@ -6,7 +6,7 @@
 
     <groupId>io.ep2p</groupId>
     <artifactId>kademlia-serialization-gson</artifactId>
-    <version>1.0.3-RELEASE</version>
+    <version>1.1.0-RELEASE</version>
     <name>Kademlia GSON Serialization</name>
     <description>Gson implementation of Kademlia serialization API</description>
     <packaging>jar</packaging>
