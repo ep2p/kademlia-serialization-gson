@@ -24,6 +24,7 @@ public class KademliaMessageDeserializer<ID extends Number, C extends Connection
         this.registerMessageClass(MessageType.DHT_LOOKUP_RESULT, DHTLookupResultKademliaMessage.class);
         this.registerMessageClass(MessageType.DHT_STORE, DHTStoreKademliaMessage.class);
         this.registerMessageClass(MessageType.DHT_STORE_RESULT, DHTStoreResultKademliaMessage.class);
+        this.registerMessageClass(MessageType.DHT_STORE_PULL, DHTStorePullKademliaMessage.class);
         this.registerMessageClass(MessageType.FIND_NODE_REQ, FindNodeRequestMessage.class);
         this.registerMessageClass(MessageType.FIND_NODE_RES, FindNodeResponseMessage.class);
         this.registerMessageClass(MessageType.PING, PingKademliaMessage.class);
@@ -35,6 +36,7 @@ public class KademliaMessageDeserializer<ID extends Number, C extends Connection
         this.registerDataType(MessageType.DHT_LOOKUP_RESULT, new TypeToken<DHTLookupResultKademliaMessage.DHTLookupResult<K, V>>(){}.getType());
         this.registerDataType(MessageType.DHT_STORE, new TypeToken<DHTStoreKademliaMessage.DHTData<ID, C, K, V>>(){}.getType());
         this.registerDataType(MessageType.DHT_STORE_RESULT, new TypeToken<DHTStoreResultKademliaMessage.DHTStoreResult<K>>(){}.getType());
+        this.registerDataType(MessageType.DHT_STORE_PULL, new TypeToken<DHTStorePullKademliaMessage.DHTStorePullData<ID>>(){}.getType());
         this.registerDataType(MessageType.FIND_NODE_REQ, idClass);
         this.registerDataType(MessageType.FIND_NODE_RES, new TypeToken<FindNodeAnswer<ID, C>>(){}.getType());
         this.registerDataType(MessageType.PING, new TypeToken<String>(){}.getType());

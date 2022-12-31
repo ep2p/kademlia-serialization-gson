@@ -183,6 +183,26 @@ public class SerializationTest {
     }
 
     @Test
+    void testPullingStoreSerialization() throws NoSuchFieldException, IllegalAccessException {
+        DHTStorePullKademliaMessage<BigInteger, IPPortConnectionInfo, String> kademliaMessage = new DHTStorePullKademliaMessage<>();
+
+        kademliaMessage.setData(new DHTStorePullKademliaMessage.DHTStorePullData<>("key"));
+        kademliaMessage.setNode(node);
+
+        String json = messageSerializer.serialize(kademliaMessage);
+        System.out.println(json);
+
+        KademliaMessage<BigInteger, IPPortConnectionInfo, Serializable> kademliaMessage1 = messageSerializer.deserialize(json);
+        Assertions.assertTrue(kademliaMessage1 instanceof DHTStorePullKademliaMessage);
+        Assertions.assertEquals(kademliaMessage1.getType(), kademliaMessage.getType());
+        Assertions.assertEquals(kademliaMessage1.getNode().getId(), kademliaMessage.getNode().getId());
+        Field field = kademliaMessage1.getData().getClass().getDeclaredField("key");
+        field.setAccessible(true);
+        Object key = field.get(kademliaMessage1.getData());
+        Assertions.assertEquals(kademliaMessage.getData().getKey(), key);
+    }
+
+    @Test
     void testExternalNodeSerialization(){
         ExternalNode<BigInteger, IPPortConnectionInfo> externalNode = new BigIntegerExternalNode<>(node, BigInteger.valueOf(1L));
         Gson gson = gsonBuilder.create();
